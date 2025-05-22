@@ -7,7 +7,7 @@ Drawbacks of docker
 
 ______________________________________________________________
 
-### Architecture of Kubernetes
+### Main components of Kubernetes
 
 ![[b6e87f74-ef5c-42e2-a1e7-ded890a78030.jpg]]
 
@@ -25,5 +25,26 @@ ______________________________________________________________
 * Service provides a fixed IP address for a pod, so that even if the pod goes down anad a new pod comes in its place, the IP address remains (lifecycle of pod and service are not connected).
 * Services provide an endpoint for accessing our containers and even provides Load Balancing features across its pods.
 * Services can be of internal and external type
-**Node :**  A Server or Virtual Machine That runs our pods
-**ConfigMap:** Contains all the Environment variables that are made accesible to applications inside containers
+
+**ConfigMap:** Contains all the external configuration like database url's, etc that are made accesible to applications inside containers.
+**Secret:** Just lke ConfigMap, but is used to store more secret info like credentials, passwords, API keys, etc
+**Volumes:** Attach External storage to a pod to persist storage. Kubernetes doesnt explicitly manage storage.
+**Deployment:** Deployment is an abstraction over the pods (like a blueprint for creating pods). In reality you would never work with pods directly, we create deployments and these deployments manage the lifecycle of the pods, and the nuber of replicas we need and the policies for scaling up and scaling down the replicas.
+**StateFul set:** Deployments are for stateless applications. Sometimes we need our application to maintain the state. Like for example if we have pods running database containers, we need to maintain the same state of the database across all the replicas to avoid data inconsistencies. this problem is solved by StateFul sets. They are just like deployments, but can maintain the state across pods. Deploying a StateFul sets is complicated so it is not preferred in most cases.
+
+### Architecture of Kubernetes
+
+**Node:**  A Server or Virtual Machine That holds and runs our pods. There are 2 types of nodes mainly, Master Node and Worker Node.
+
+**Worker Node:**  
+
+Worker nodes do the actual work, they contain and run our application. Each Node has multiple pods.
+Each Node has 3 main processes installed by default, which are needed to run and manage pods.
+
+* **Container Runtime:** A runtime to run containers, like Docker.
+* **kubelet:** A process of Kubernetes that is responsible for taking the configuration then creating and running a pod with container inside it( Also responsible for allocating resources to the pods inside the node). Kubelet interacts with the Node and container runtime. 
+* **kube-proxy:** A process that forwards the requests from services to pods.
+
+**Master Node:** 
+
+Master Node Manages all the worker nodes and the incoming traffic
