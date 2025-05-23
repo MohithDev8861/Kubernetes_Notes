@@ -116,3 +116,68 @@ spec:
 ```
 
 **Template:** Template is the configuration of a pod. It has its own metadata and specs. This gives all specifications about the container that we intend to run like the image, port, etc.
+
+_________________________________________________________________________
+Secret Configuration file
+
+All secret values must be base64 encoded
+
+```
+apiVersion: v1
+kind: Secret
+metadata:
+    name: mongodb-secret
+type: Opaque
+data:
+    mongo-root-username: dXNlcm5hbWU=
+    mongo-root-password: cGFzc3dvcmQ=
+
+```
+
+Referencing Secret values 
+![[{E1EB8056-20F4-4436-BB81-62FA3D5478C5}.png]]
+
+
+________________________________________________________________________
+
+### Namespaces
+
+Kubernetes namespaces are the way of dividing the cluster resources between multiple users. They comes with a mechanism of creating logical isolated environments within the same kubernetes cluster. Each namespace has its own set of policies, resources, and access controls making them ideal for the environments such as development, staging and production. provides better resource management, security and maintaining an organized structure within large kubernetes deployments.
+
+The following are the reasons to use kubernetes Namespaces:
+- **Resource Isolation:** They provide logical separation of resources, ensuring that different applications or teams do not interfere with each other within the same cluster.
+- **Access Control:** Namespaces enable fine-grained access controls, allowing administrators to define permissions and policies specific to each namespace.
+- **Environment Segregation**: They facilitate the creation of separate environments (e.g., development, testing, production) within a single cluster, improving organization and management.
+- **Efficient Resource Management:** Namespaces allow for better resource allocation and quota management, preventing any single application from consuming excessive resources at the expense of others.
+
+When the kubernetes cluster is setup, at that time 4 kubernetes namespaces are created, each with some specific purpose. Those are as follows:
+
+- **kube-system:** System processes like Master and kubectl processes are deployed in this namespace; thus, it is advised not to create or modify the namespace.
+- **kube-public:** This namespace contains publicly accessible data like a configMap containing cluster information.
+- **kube-node-lease:** This namespace is the heartbeat of nodes. Each node has its associated lease object. It determines the availability of a node.
+- **default:** This is the namespace that you use to create your resources by default.
+
+Although whatever resources you create will be created in the default namespace but you can also create your own new namespace and create resources there.
+**Note:** Avoid creating namespaces with the prefix Kube-, since it is reserved for Kubernetes system namespaces and you should not try to modify them.
+##### Points to remember:
+**ConfigMap and Secret cannot be shared:** Each namespace must have its own ConfigMap and Secret file even though the variables refer the same value or component.
+
+![[{562F389C-4B1A-4717-8522-71F9D830478A}.png]]
+
+**Services can be shared across NameSpaces:** You can access services from other namespaces, by attaching the namespace name after the url of the service.
+
+![[{7DD43B6B-E6D5-414C-B6C7-0F852B77E4A3}.png]]
+
+**Some components cant be isolated with a namespace:** Components like volumes and nodes are accessible throughout the cluster irrespective of namespaces
+
+![[{C0C133BB-1DD9-46A1-BD67-2CF4962AF72F}.png]]
+
+### Ingress 
+
+Ingress is a Kubernetes API object that is used to expose HTTP and HTTPS routes from outside the Kubernetes cluster to services inside the cluster. It provides a single entry point into a cluster hence making it simpler to manage applications and troubleshoot routing issues. The official definition of Ingress says ****"Ingress is an API object that manages external access to the services in a Cluster"****.
+
+![[{8ED4515F-DE89-4BC7-AA6A-9DD6E9DE2119}.png]]
+
+![[{D5F6F95D-3FD0-4694-B7FA-2BE96D4204BD}.png]]
+
+More about ingress:  https://www.geeksforgeeks.org/what-is-kubernetes-ingress/
